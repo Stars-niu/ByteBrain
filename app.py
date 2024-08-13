@@ -4,11 +4,11 @@ import torch
 import streamlit as st
 
 # 创建一个标题和一个副标题
-st.title("🌟ByteBrain🌟")
+st.title("🌟 ByteBrain")
 
 # 设置页面配置
 st.set_page_config(
-    page_title="✨ByteBrain",
+    page_title="ByteBrain",
     page_icon="🪐",
     layout="wide",
     initial_sidebar_state="collapsed",
