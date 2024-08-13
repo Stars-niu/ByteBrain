@@ -3,35 +3,16 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import streamlit as st
 
+# 创建一个标题和一个副标题
+st.title("🌟ByteBrain🌟")
+
 # 设置页面配置
 st.set_page_config(
-    page_title="ByteBrain",
-    page_icon="✨",
+    page_title="✨ByteBrain",
+    page_icon="🪐",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-
-# 设置背景图片
-def set_background(image_url):
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background: url({image_url});
-            background-size: cover;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-# 设置背景图片URL
-background_image_url = "https://raw.githubusercontent.com/Stars-niu/ByteBrain/main/background.jpg"
-set_background(background_image_url)
-
-# 创建一个标题和一个副标题
-st.markdown("<h1 style='text-align: center; color: white;'>ByteBrain</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center; color: white;'>信息时代您的计算机科学智能知识助手</h3>", unsafe_allow_html=True)
 
 # 源大模型下载
 from modelscope import snapshot_download
