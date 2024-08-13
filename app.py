@@ -6,7 +6,7 @@ import streamlit as st
 # 设置页面配置
 st.set_page_config(
     page_title="ByteBrain",
-    page_icon="🌟",
+    page_icon="✨",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
