@@ -88,13 +88,13 @@ with col1:
         st.chat_message(msg["role"]).write(msg["content"])
 
 with col2:
-    st.image("https://via.placeholder.com/150", caption="ByteBrain Logo")
+    st.image('logo.png', caption="ByteBrain ")
     st.markdown("### 关于ByteBrain")
     st.markdown("ByteBrain是一个智能知识助手，旨在帮助用户快速获取信息和解决问题。")
     st.markdown("### 联系我们")
     st.markdown("如果您有任何问题或建议，请通过以下方式联系我们：")
     st.markdown("- 邮箱: support@bytebrain.com")
-    st.markdown("- 电话: 123-456-7890")
+    st.markdown("- 电话: 520-1314")
 
 # 如果用户在聊天输入框中输入了内容，则执行以下操作
 if prompt := st.chat_input("请输入您的问题:"):
