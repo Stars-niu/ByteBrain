@@ -74,7 +74,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
 # 源大模型下载
 # model_dir = snapshot_download('IEITYuan/Yuan2-2B-Mars-hf', cache_dir='./')
 model_dir = snapshot_download('IEITYuan/Yuan2-2B-July-hf', cache_dir='./')
@@ -120,7 +119,6 @@ with col1:
 with col2:
     st.markdown("<div class='fixed-right'>", unsafe_allow_html=True)
     st.image("logo.png", caption="ByteBrain Logo", width=150)
-    st.markdown("### 关于ByteBrain")
     st.markdown("ByteBrain——一个智能知识助手，旨在帮助用户快速获取信息和解决问题。")
     st.markdown("### 联系我们")
     st.markdown("如果您有任何问题或建议，请通过以下方式联系我们：")
