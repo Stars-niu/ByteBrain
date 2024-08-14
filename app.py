@@ -17,7 +17,9 @@ st.markdown(
     """
     <style>
     .main {
-        background-color: #f0f2f6;
+        background-image: url('background.jpg');
+        background-size: cover;
+        background-position: center;
         padding: 20px;
     }
     .stButton>button {
@@ -38,6 +40,16 @@ st.markdown(
         border-radius: 12px;
         padding: 10px;
     }
+    .fixed-right {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 30%;
+    }
+    .chat-container {
+        width: 65%;
+        margin-right: 35%;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -45,7 +57,7 @@ st.markdown(
 
 # 创建一个标题和一个副标题
 st.title("✨ ByteBrain")
-st.subheader("信息时代您的智能知识助手")
+st.subheader("计算机科学智能知识助手")
 
 # 源大模型下载
 model_dir = snapshot_download('IEITYuan/Yuan2-2B-Mars-hf', cache_dir='./')
@@ -80,21 +92,25 @@ if "messages" not in st.session_state:
     st.session_state["messages"] = []
 
 # 使用分栏布局
-col1, col2 = st.columns([3, 1])
+col1, col2 = st.columns([2, 1])
 
 with col1:
+    st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
     # 每次对话时，都需要遍历session_state中的所有消息，并显示在聊天界面上
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with col2:
-    st.image('logo.png', caption="ByteBrain ")
+    st.markdown("<div class='fixed-right'>", unsafe_allow_html=True)
+    st.image("logo.png", caption="ByteBrain Logo")
     st.markdown("### 关于ByteBrain")
-    st.markdown("ByteBrain是一个智能知识助手，旨在帮助用户快速获取信息和解决问题。")
+    st.markdown("ByteBrain——一个智能知识助手，旨在帮助用户快速获取信息和解决问题。")
     st.markdown("### 联系我们")
     st.markdown("如果您有任何问题或建议，请通过以下方式联系我们：")
     st.markdown("- 邮箱: support@bytebrain.com")
     st.markdown("- 电话: 520-1314")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # 如果用户在聊天输入框中输入了内容，则执行以下操作
 if prompt := st.chat_input("请输入您的问题:"):
