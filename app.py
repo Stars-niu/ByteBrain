@@ -9,7 +9,12 @@ st.set_page_config(
     page_title="ByteBrain",
     page_icon="🪐",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="auto",
+    menu_items={
+        "Get Help": "https://bytebrain.com/help",
+        "Report a bug": "https://bytebrain.com/bug-report",
+        "About": "https://bytebrain.com/about"
+    }
 )
 
 # 添加自定义CSS样式
@@ -17,14 +22,14 @@ st.markdown(
     """
     <style>
     .main {
-        background-image: url('background.jpg');
+        background-image: url('Background.png');
         background-size: cover;
         background-position: center;
-        padding: 20px;
+        padding: 10px;
     }
     .stButton>button {
         background-color: #4CAF50;
-        color: white;
+        color: blue;
         border: none;
         padding: 10px 24px;
         text-align: center;
@@ -60,12 +65,12 @@ st.title("✨ ByteBrain")
 st.subheader("计算机科学智能知识助手")
 
 # 源大模型下载
-model_dir = snapshot_download('IEITYuan/Yuan2-2B-Mars-hf', cache_dir='./')
-# model_dir = snapshot_download('IEITYuan/Yuan2-2B-July-hf', cache_dir='./')
+# model_dir = snapshot_download('IEITYuan/Yuan2-2B-Mars-hf', cache_dir='./')
+model_dir = snapshot_download('IEITYuan/Yuan2-2B-July-hf', cache_dir='./')
 
 # 定义模型路径
-path = './IEITYuan/Yuan2-2B-Mars-hf'
-# path = './IEITYuan/Yuan2-2B-July-hf'
+# path = './IEITYuan/Yuan2-2B-Mars-hf'
+path = './IEITYuan/Yuan2-2B-July-hf'
 
 # 定义模型数据类型
 torch_dtype = torch.bfloat16 # A10
