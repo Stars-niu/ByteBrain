@@ -65,9 +65,15 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# 创建一个标题和一个副标题
-st.title("✨ ByteBrain")
-st.subheader("计算机科学智能知识助手")
+# # 创建一个标题和一个副标题
+# st.title("? ByteBrain")
+# st.subheader("计算机科学智能知识助手")
+
+st.markdown(
+    '<span style="font-size: 24px">✨ ByteBrain</span>&nbsp;&nbsp;<span style="font-size: 12px">——计算机科学智能知识助手</span>',
+    unsafe_allow_html=True
+)
+
 
 # 源大模型下载
 # model_dir = snapshot_download('IEITYuan/Yuan2-2B-Mars-hf', cache_dir='./')
