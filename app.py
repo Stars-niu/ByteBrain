@@ -52,8 +52,10 @@ st.markdown(
         width: 30%;
     }
     .chat-container {
-        width: 65%;
-        margin-right: 35%;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+        padding-right: 20px;
     }
     </style>
     """,
@@ -106,9 +108,30 @@ with col1:
         st.chat_message(msg["role"]).write(msg["content"])
     st.markdown("</div>", unsafe_allow_html=True)
 
+    # 聊天输入框
+    if prompt := st.chat_input("请输入您的问题:"):
+        # 将用户的输入添加到session_state中的messages列表中
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        # 在聊天界面上显示用户的输入
+        st.chat_message("user").write(prompt)
+
+        # 调用模型
+        prompt = "<n>".join(msg["content"] for msg in st.session_state.messages) + "<sep>" # 拼接对话历史
+        inputs = tokenizer(prompt, return_tensors="pt")["input_ids"].cuda()
+        outputs = model.generate(inputs, do_sample=False, max_length=1024) # 设置解码方式和最大生成长度
+        output = tokenizer.decode(outputs[0])
+        response = output.split("<sep>")[-1].replace("<eod>", '')
+
+        # 将模型的输出添加到session_state中的messages列表中
+        st.session_state.messages.append({"role": "assistant", "content": response})
+
+        # 在聊天界面上显示模型的输出
+        st.chat_message("assistant").write(response)
+
 with col2:
     st.markdown("<div class='fixed-right'>", unsafe_allow_html=True)
-    st.image("logo.png", caption="ByteBrain Logo")
+    st.image("logo.png", caption="ByteBrain Logo", width=150)
     st.markdown("### 关于ByteBrain")
     st.markdown("ByteBrain——一个智能知识助手，旨在帮助用户快速获取信息和解决问题。")
     st.markdown("### 联系我们")
@@ -116,24 +139,3 @@ with col2:
     st.markdown("- 邮箱: support@bytebrain.com")
     st.markdown("- 电话: 520-1314")
     st.markdown("</div>", unsafe_allow_html=True)
-
-# 如果用户在聊天输入框中输入了内容，则执行以下操作
-if prompt := st.chat_input("请输入您的问题:"):
-    # 将用户的输入添加到session_state中的messages列表中
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
-    # 在聊天界面上显示用户的输入
-    st.chat_message("user").write(prompt)
-
-    # 调用模型
-    prompt = "<n>".join(msg["content"] for msg in st.session_state.messages) + "<sep>" # 拼接对话历史
-    inputs = tokenizer(prompt, return_tensors="pt")["input_ids"].cuda()
-    outputs = model.generate(inputs, do_sample=False, max_length=1024) # 设置解码方式和最大生成长度
-    output = tokenizer.decode(outputs[0])
-    response = output.split("<sep>")[-1].replace("<eod>", '')
-
-    # 将模型的输出添加到session_state中的messages列表中
-    st.session_state.messages.append({"role": "assistant", "content": response})
-
-    # 在聊天界面上显示模型的输出
-    st.chat_message("assistant").write(response)
