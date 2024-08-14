@@ -70,7 +70,7 @@ st.markdown(
 # st.subheader("计算机科学智能知识助手")
 
 st.markdown(
-    '<span style="font-size: 72px">✨ ByteBrain</span>&nbsp;&nbsp;<span style="font-size: 24px">——计算机科学智能知识助手</span>',
+    '<span style="font-size: 60px">✨ ByteBrain</span>&nbsp;&nbsp;<span style="font-size: 24px">——计算机科学智能知识助手</span>',
     unsafe_allow_html=True
 )
 
