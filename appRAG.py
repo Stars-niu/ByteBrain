@@ -109,12 +109,14 @@ def load_knowledge_base(file_path):
 knowledge_base = load_knowledge_base('knowledge.txt')
 
 # 初始化TF-IDF向量器
-vectorizer = TfidfVectorizer().fit_transform(knowledge_base)
+vectorizer = TfidfVectorizer()
+vectorizer.fit(knowledge_base)
 
 # 检索函数
 def retrieve_relevant_knowledge(query, knowledge_base, vectorizer, top_k=5):
     query_vec = vectorizer.transform([query])
-    similarities = cosine_similarity(query_vec, vectorizer).flatten()
+    knowledge_vecs = vectorizer.transform(knowledge_base)
+    similarities = cosine_similarity(query_vec, knowledge_vecs).flatten()
     relevant_indices = similarities.argsort()[-top_k:][::-1]
     relevant_knowledge = [knowledge_base[i] for i in relevant_indices]
     return "\n".join(relevant_knowledge)
@@ -135,7 +137,7 @@ with col1:
 
 with col2:
     st.markdown("<div class='fixed-right'>", unsafe_allow_html=True)
-    st.image("logo.png", caption="ByteBrain", width=150)
+    st.image("logo.png", caption="ByteBrain Logo", width=150)
     st.markdown("ByteBrain——一个智能知识助手，旨在帮助用户快速获取信息和解决问题。")
     st.markdown("### 联系我们")
     st.markdown("如果您有任何问题或建议，请通过以下方式联系我们：")
