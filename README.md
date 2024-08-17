@@ -3,7 +3,7 @@
 2024-Datawhale-AISummerCamp-IV   
 Development-of-Large-scale-Model-Applications
 ---
-# 一键部署体验
+## 一键部署体验
 ```mermaid
 graph LR
 A(魔塔社区)  --> B(我的NoteBook)
@@ -24,8 +24,9 @@ pip install streamlit==1.24.0
 cd ByteBrain
 streamlit run app.py --server.address 127.0.0.1 --server.port 1001
 ```
+`app.py根据使用的版本自行更换`
 ---
-RAG（Retrieval-Augmented Generation）  
+## RAG（Retrieval-Augmented Generation）  
 这个名字听起来可能有点复杂，但实际上它就是一个帮助人工智能更好地理解和回答问题的技术。让我们来简单地了解一下RAG是什么以及它是怎么工作的。
 ## RAG 是什么？
 RAG 就像是一个人工智能助手的超级记忆功能。通常情况下，AI在回答问题时，会依赖于它之前学习过的大量知识。但是有时候这些知识可能不够全面或者不够新。这时候RAG就派上用场了——它可以让AI在回答问题的时候去查找最新的信息，就像我们人类在回答问题前会去查阅资料一样。
