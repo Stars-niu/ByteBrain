@@ -1,7 +1,10 @@
 # ByteBrain
+
 信息时代您的计算机科学智能知识助手  
+
 2024-Datawhale-AISummerCamp-IV   
 Development-of-Large-scale-Model-Applications
+
 ---
 ## 一键部署体验
 ```mermaid
@@ -24,7 +27,9 @@ pip install streamlit==1.24.0
 cd ByteBrain
 streamlit run app.py --server.address 127.0.0.1 --server.port 1001
 ```
+
 `app.py根据使用的版本自行更换`
+
 ---
 ## RAG（Retrieval-Augmented Generation）  
 这个名字听起来可能有点复杂，但实际上它就是一个帮助人工智能更好地理解和回答问题的技术。让我们来简单地了解一下RAG是什么以及它是怎么工作的。
