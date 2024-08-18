@@ -4,3 +4,4 @@ transformers
 torch
 numpy
 datasets
+tf-keras
