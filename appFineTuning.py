@@ -4,9 +4,12 @@ from modelscope import snapshot_download
 from typing import List
 import numpy as np
 import torch
-from transformers import AutoModel, AutoTokenizer, AutoModelForCausalLM, Trainer, TrainingArguments, DataCollatorForSeq2Seq
+from transformers import AutoModel, AutoTokenizer, AutoModelForCausalLM
 import os
 from datasets import load_dataset, Dataset
+import json
+import pandas as pd
+from peft import PeftModel
 
 # 设置CUDA环境变量
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
@@ -81,7 +84,7 @@ st.markdown(
 # 向量模型下载
 embed_model_dir = snapshot_download("AI-ModelScope/bge-small-zh-v1.5", cache_dir='.')
 # 源大模型下载
-llm_model_dir = snapshot_download('IEITYuan/Yuan2-2B-Mars-hf', cache_dir='.')
+llm_model_dir = snapshot_download('IEITYuan/Yuan2-2B-Mars-hf', cache_dir='./')
 
 # 定义向量模型类
 class EmbeddingModel:
@@ -163,7 +166,7 @@ class LLM:
     class for Yuan2.0 LLM
     """
 
-    def __init__(self, model_path: str) -> None:
+    def __init__(self, model_path: str, lora_path: str) -> None:
         print("Create tokenizer...")
         # 加载预训练的分词器
         self.tokenizer = AutoTokenizer.from_pretrained(model_path, add_eos_token=False, add_bos_token=False, eos_token='<eod>')
@@ -174,6 +177,8 @@ class LLM:
         self.model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.bfloat16, trust_remote_code=True)
         if torch.cuda.is_available():
             self.model = self.model.cuda()
+        # 加载微调的LoRA模型
+        self.model = PeftModel.from_pretrained(self.model, model_id=lora_path)
 
         print(f'Loading Yuan2.0 model from {model_path}.')
 
@@ -204,49 +209,7 @@ class LLM:
         return output
 
 print("> Create Yuan2.0 LLM...")
-llm = LLM(llm_model_dir)
-
-# 微调大模型
-def fine_tune_model(model, tokenizer, train_dataset):
-    # 定义训练参数
-    training_args = TrainingArguments(
-        output_dir='./results',
-        num_train_epochs=3,
-        per_device_train_batch_size=2,
-        save_steps=10_000,
-        save_total_limit=2,
-        logging_dir='./logs',
-    )
-
-    # 定义数据整理器
-    data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
-
-    # 定义Trainer
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        data_collator=data_collator,
-    )
-
-    # 开始训练
-    trainer.train()
-
-# 加载微调数据
-def load_fine_tune_data(file_path):
-    data = []
-    with open(file_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            question, answer = line.strip().split('\t')
-            data.append({'question': question, 'answer': answer})
-    return Dataset.from_list(data)
-
-# 加载微调数据
-fine_tune_data_path = './fine_tune_data.txt'
-fine_tune_data = load_fine_tune_data(fine_tune_data_path)
-
-# 微调模型
-fine_tune_model(llm.model, llm.tokenizer, fine_tune_data)
+llm = LLM(llm_model_dir, './output/Yuan2.0-2B_lora_bf16/checkpoint-51')
 
 # 初次运行时，session_state中没有"messages"，需要创建一个空列表
 if "messages" not in st.session_state:
