@@ -1,0 +1,10 @@
+[
+    {
+        "input": "什么是机器学习？",
+        "output": "{\"定义\": [\"机器学习是一种人工智能技术，允许系统在没有明确编程的情况下学习和改进。\"], \"背景信息\": [\"机器学习起源于模式识别和计算学习理论。\"], \"相关技术\": [\"监督学习、无监督学习、强化学习。\"], \"应用场景\": [\"图像识别、语音识别、推荐系统。\"], \"示例代码\": [\"from sklearn import datasets\\nfrom sklearn.model_selection import train_test_split\\nfrom sklearn.linear_model import LogisticRegression\\n\\n# 加载数据集\\niris = datasets.load_iris()\\nX = iris.data\\ny = iris.target\\n\\n# 拆分数据集\\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)\\n\\n# 训练模型\\nmodel = LogisticRegression()\\nmodel.fit(X_train, y_train)\\n\\n# 预测\\npredictions = model.predict(X_test)\\nprint(predictions)\"]}"
+    },
+    {
+        "input": "什么是深度学习？",
+        "output": "{\"定义\": [\"深度学习是一种机器学习方法，基于人工神经网络，特别是深度神经网络。\"], \"背景信息\": [\"深度学习起源于人工神经网络的研究，近年来由于计算能力的提升和大数据的出现而迅速发展。\"], \"相关技术\": [\"卷积神经网络（CNN）、循环神经网络（RNN）、生成对抗网络（GAN）。\"], \"应用场景\": [\"图像识别、语音识别、自然语言处理。\"], \"示例代码\": [\"import tensorflow as tf\\nfrom tensorflow.keras import layers, models\\n\\n# 构建模型\\nmodel = models.Sequential()\\nmodel.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))\\nmodel.add(layers.MaxPooling2D((2, 2)))\\nmodel.add(layers.Conv2D(64, (3, 3), activation='relu'))\\nmodel.add(layers.MaxPooling2D((2, 2)))\\nmodel.add(layers.Conv2D(64, (3, 3), activation='relu'))\\n\\n# 添加分类器\\nmodel.add(layers.Flatten())\\nmodel.add(layers.Dense(64, activation='relu'))\\nmodel.add(layers.Dense(10, activation='softmax'))\\n\\n# 编译模型\\nmodel.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])\\n\\n# 训练模型\\nmodel.fit(train_images, train_labels, epochs=5)\\n\\n# 评估模型\\ntest_loss, test_acc = model.evaluate(test_images, test_labels)\\nprint(test_acc)\"]}"
+    }
+]
