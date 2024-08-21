@@ -1,7 +1,9 @@
 streamlit==1.24.0
-torch
+torch==2.3.0
+torchvision==0.18.0
 pandas
 datasets
 transformers
 peft
 modelscope
+tb-nightly
