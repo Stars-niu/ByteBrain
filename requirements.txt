@@ -10,3 +10,4 @@ tb-nightly
 sentencepiece
 flash_attn 
 einops
+packaging
