@@ -8,12 +8,20 @@ from peft import LoraConfig, TaskType, get_peft_model
 
 # 下载模型
 def download_model(model_name, cache_dir='.'):
-    return snapshot_download(model_name, cache_dir=cache_dir)
+    try:
+        return snapshot_download(model_name, cache_dir=cache_dir)
+    except Exception as e:
+        st.error(f"模型下载失败: {e}")
+        return None
 
 # 读取数据
 def load_data(file_path):
-    df = pd.read_json(file_path)
-    return Dataset.from_pandas(df)
+    try:
+        df = pd.read_json(file_path)
+        return Dataset.from_pandas(df)
+    except Exception as e:
+        st.error(f"数据加载失败: {e}")
+        return None
 
 # 数据处理函数
 def process_func(example, tokenizer, max_length=384):
@@ -37,18 +45,25 @@ def process_func(example, tokenizer, max_length=384):
 # 加载和处理数据集
 def prepare_dataset(file_path, tokenizer):
     ds = load_data(file_path)
-    return ds.map(lambda x: process_func(x, tokenizer), remove_columns=ds.column_names)
+    if ds is not None:
+        return ds.map(lambda x: process_func(x, tokenizer), remove_columns=ds.column_names)
+    else:
+        return None
 
 # 加载模型和tokenizer
 def load_model_and_tokenizer(model_path):
-    tokenizer = AutoTokenizer.from_pretrained(model_path, add_eos_token=False, add_bos_token=False, eos_token='<eod>', legacy=False)
-    tokenizer.add_tokens(['<sep>', '<pad>', '<mask>', '<predict>', '<FIM_SUFFIX>', '<FIM_PREFIX>', '<FIM_MIDDLE>','<commit_before>','<commit_msg>','<commit_after>','<jupyter_start>','<jupyter_text>','<jupyter_code>','<jupyter_output>','<empty_output>'], special_tokens=True)
-    tokenizer.pad_token = tokenizer.eos_token
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(model_path, add_eos_token=False, add_bos_token=False, eos_token='<eod>', legacy=False)
+        tokenizer.add_tokens(['<sep>', '<pad>', '<mask>', '<predict>', '<FIM_SUFFIX>', '<FIM_PREFIX>', '<FIM_MIDDLE>','<commit_before>','<commit_msg>','<commit_after>','<jupyter_start>','<jupyter_text>','<jupyter_code>','<jupyter_output>','<empty_output>'], special_tokens=True)
+        tokenizer.pad_token = tokenizer.eos_token
 
-    model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto", torch_dtype=torch.bfloat16, trust_remote_code=True)
-    model.enable_input_require_grads()
+        model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto", torch_dtype=torch.bfloat16, trust_remote_code=True)
+        model.enable_input_require_grads()
 
-    return model, tokenizer
+        return model, tokenizer
+    except Exception as e:
+        st.error(f"模型加载失败: {e}")
+        return None, None
 
 # 配置Lora
 def configure_lora(model):
@@ -103,11 +118,19 @@ def main():
 
     st.write("下载并加载模型...")
     model_path = download_model(model_name)
+    if model_path is None:
+        return
+
     model, tokenizer = load_model_and_tokenizer(model_path)
+    if model is None or tokenizer is None:
+        return
+
     model = configure_lora(model)
 
     st.write("加载并处理数据集...")
     dataset = prepare_dataset(data_file, tokenizer)
+    if dataset is None:
+        return
 
     if st.button("开始训练模型"):
         st.write("训练模型中...")
