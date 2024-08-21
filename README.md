@@ -80,15 +80,14 @@ RAG 就像是一个人工智能助手的超级记忆功能。通常情况下，A
 持续学习：随着时间的推移，可以不断地对模型进行微调，以适应新的情况和数据。
 
 ```
+# cmd
 python3 -m venv myenv
 source myenv/bin/activate  # Linux/MacOS
 # myenv\Scripts\activate  # Windows
-
 git clone https://github.com/Stars-niu/ByteBrain.git
 cd ByteBrain
 pip install -r requirements.txt
 streamlit run appFineTuning.py --server.address 127.0.0.1 --server.port 1005
-
 ```
 
 ```powershell
