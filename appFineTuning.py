@@ -1,3 +1,4 @@
+import streamlit as st
 import torch
 import pandas as pd
 from datasets import Dataset
@@ -40,7 +41,7 @@ def prepare_dataset(file_path, tokenizer):
 
 # 加载模型和tokenizer
 def load_model_and_tokenizer(model_path):
-    tokenizer = AutoTokenizer.from_pretrained(model_path, add_eos_token=False, add_bos_token=False, eos_token='<eod>')
+    tokenizer = AutoTokenizer.from_pretrained(model_path, add_eos_token=False, add_bos_token=False, eos_token='<eod>', legacy=False)
     tokenizer.add_tokens(['<sep>', '<pad>', '<mask>', '<predict>', '<FIM_SUFFIX>', '<FIM_PREFIX>', '<FIM_MIDDLE>','<commit_before>','<commit_msg>','<commit_after>','<jupyter_start>','<jupyter_text>','<jupyter_code>','<jupyter_output>','<empty_output>'], special_tokens=True)
     tokenizer.pad_token = tokenizer.eos_token
 
@@ -90,39 +91,55 @@ def generate(model, tokenizer, prompt):
     inputs = tokenizer(prompt, return_tensors="pt")["input_ids"].cuda()
     outputs = model.generate(inputs, do_sample=False, max_length=256)
     output = tokenizer.decode(outputs[0])
-    print(output.split("<sep>")[-1])
+    return output.split("<sep>")[-1]
 
-if __name__ == "__main__":
+# Streamlit 应用
+def main():
+    st.title("计算机科学智能知识助手")
+
     model_name = 'IEITYuan/Yuan2-2B-Mars-hf'
     data_file = './data.json'
     output_dir = "./output/Yuan2.0-2B_lora_bf16"
 
+    st.write("下载并加载模型...")
     model_path = download_model(model_name)
     model, tokenizer = load_model_and_tokenizer(model_path)
     model = configure_lora(model)
+
+    st.write("加载并处理数据集...")
     dataset = prepare_dataset(data_file, tokenizer)
-    train_model(model, tokenizer, dataset, output_dir)
 
-    # Example usage
-    template = '''
-    # 任务描述
-    假设你是一个计算机科学智能知识助手，能够回答关于计算机科学领域的问题，并提供详细的解释。
+    if st.button("开始训练模型"):
+        st.write("训练模型中...")
+        train_model(model, tokenizer, dataset, output_dir)
+        st.write("模型训练完成！")
 
-    # 任务要求
-    回答应包括以下内容：定义、背景信息、相关技术、应用场景、示例代码（如果适用）。
+    st.write("生成回答")
+    input_str = st.text_area("输入问题", "什么是深度学习？")
+    if st.button("生成回答"):
+        template = '''
+        # 任务描述
+        假设你是一个计算机科学智能知识助手，能够回答关于计算机科学领域的问题，并提供详细的解释。
 
-    # 样例
-    输入：
-    什么是机器学习？
-    输出：
-    {"定义": ["机器学习是一种人工智能技术，允许系统在没有明确编程的情况下学习和改进。"], "背景信息": ["机器学习起源于模式识别和计算学习理论。"], "相关技术": ["监督学习、无监督学习、强化学习。"], "应用场景": ["图像识别、语音识别、推荐系统。"], "示例代码": ["from sklearn import datasets\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\n\n# 加载数据集\niris = datasets.load_iris()\nX = iris.data\ny = iris.target\n\n# 拆分数据集\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)\n\n# 训练模型\nmodel = LogisticRegression()\nmodel.fit(X_train, y_train)\n\n# 预测\npredictions = model.predict(X_test)\nprint(predictions)"]}
+        # 任务要求
+        回答应包括以下内容：定义、背景信息、相关技术、应用场景、示例代码（如果适用）。
 
-    # 当前问题
-    input_str
+        # 样例
+        输入：
+        什么是机器学习？
+        输出：
+        {"定义": ["机器学习是一种人工智能技术，允许系统在没有明确编程的情况下学习和改进。"], "背景信息": ["机器学习起源于模式识别和计算学习理论。"], "相关技术": ["监督学习、无监督学习、强化学习。"], "应用场景": ["图像识别、语音识别、推荐系统。"], "示例代码": ["from sklearn import datasets\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\n\n# 加载数据集\niris = datasets.load_iris()\nX = iris.data\ny = iris.target\n\n# 拆分数据集\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)\n\n# 训练模型\nmodel = LogisticRegression()\nmodel.fit(X_train, y_train)\n\n# 预测\npredictions = model.predict(X_test)\nprint(predictions)"]}
 
-    # 任务重述
-    请参考样例，按照任务要求，回答当前问题，并提供详细的解释。
-    '''
-    input_str = '什么是深度学习？'
-    prompt = template.replace('input_str', input_str).strip()
-    generate(model, tokenizer, prompt)
+        # 当前问题
+        input_str
+
+        # 任务重述
+        请参考样例，按照任务要求，回答当前问题，并提供详细的解释。
+        '''
+        prompt = template.replace('input_str', input_str).strip()
+        output = generate(model, tokenizer, prompt)
+        st.write("回答：")
+        st.write(output)
+
+if __name__ == "__main__":
+    main()
