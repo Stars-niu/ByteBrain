@@ -1,7 +1,7 @@
-streamlit==1.37.1
-transformers==4.43.0  # 选择一个与其他包兼容的版本
-torch==2.3.1  # 选择一个与其他包兼容的版本
-modelscope==1.17.1
-datasets==2.18.0  # 选择一个与其他包兼容的版本
-pandas==2.2.2
-peft==0.11.1  # 选择一个与其他包兼容的版本
+streamlit==1.24.0
+torch
+pandas
+datasets
+transformers
+peft
+modelscope
