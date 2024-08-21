@@ -8,3 +8,5 @@ peft
 modelscope
 tb-nightly
 sentencepiece
+flash_attn 
+einops
