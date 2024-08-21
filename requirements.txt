@@ -1,4 +1,5 @@
 streamlit==1.24.0
+packaging
 torch
 torchvision==0.18.0
 pandas
@@ -10,4 +11,4 @@ tb-nightly
 sentencepiece
 flash_attn 
 einops
-packaging
+
