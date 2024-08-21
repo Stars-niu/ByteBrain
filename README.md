@@ -79,6 +79,21 @@ RAG 就像是一个人工智能助手的超级记忆功能。通常情况下，A
 成本效益：相比于全面重新训练，微调通常需要较少的资源和时间。
 持续学习：随着时间的推移，可以不断地对模型进行微调，以适应新的情况和数据。
 
+'''txt
+streamlit==1.24.0
+torch==2.3.0
+torchvision==0.18.0
+pandas
+datasets
+transformers
+peft
+modelscope
+tb-nightly
+sentencepiece
+flash_attn 
+einops
+'''
+
 ---
 通过微调，我们可以让一个通用的智能助手变得更加专业和高效，更好地服务于特定的任务和需求。
 
