@@ -25,8 +25,9 @@ E-->F(启动!!!)
 ```powershell
 #JupyterLab->Other->Terminal->Ctrl+V
 git clone https://github.com/Stars-niu/ByteBrain.git
-pip install streamlit==1.24.0
 cd ByteBrain
+pip install --upgrade pip setuptools
+pip install -r requirements.txt
 streamlit run app.py --server.address 127.0.0.1 --server.port 1001
 ```
 
@@ -36,6 +37,15 @@ streamlit run app.py --server.address 127.0.0.1 --server.port 1001
 
 ---
 ## RAG（Retrieval-Augmented Generation）  
+
+```
+git clone https://github.com/Stars-niu/ByteBrain.git
+cd ByteBrain
+pip install --upgrade pip setuptools
+pip install -r requirements.txt
+streamlit run appRAG.py --server.address 127.0.0.1 --server.port 1002
+```
+
 这个名字听起来可能有点复杂，但实际上它就是一个帮助人工智能更好地理解和回答问题的技术。让我们来简单地了解一下RAG是什么以及它是怎么工作的。
 
 ### RAG 是什么？
@@ -52,36 +62,12 @@ RAG 就像是一个人工智能助手的超级记忆功能。通常情况下，A
 有时候，传统的AI模型可能不知道最新的数据或者事件，比如新的科学研究发现、新闻报道等。有了RAG的帮助，AI就可以实时地获取这些信息，并利用它们来生成更准确的回答。   
 举个例子来说，如果有人问：“谁是当前世界上最富有的人？”没有RAG的AI可能会给出一个几年前的答案，而有RAG的AI则会去查找最新的财富排行榜来给出最新的名字。   
 
-```
-git clone https://github.com/Stars-niu/ByteBrain.git
-cd ByteBrain
-pip install --upgrade pip setuptools
-pip install -r requirements.txt
-streamlit run appRAG.py --server.address 127.0.0.1 --server.port 1009
-```
-```
-streamlit==1.24.0
-packaging
-torch
-torchvision==0.18.0
-pandas
-datasets
-transformers
-peft
-modelscope
-tb-nightly
-sentencepiece
-flash_attn 
-einops
-```
-
 ---
 总的来说，RAG就像是给AI装上了“即时更新”的功能，让它们能够更好地适应不断变化的信息环境，从而提供更加准确和有用的答案。
 
 ---
 ## 微调（Fine tuning）
-想象一下，你有一个非常聪明的助手，它已经学会了很多基本技能，比如理解和回答问题、翻译语言、识别图片上的东西等等。这个助手就像是一个大模型，它通过学习大量的信息来掌握这些技能。
-
+想象一下，你有一个非常聪明的助手，它已经学会了很多基本技能，比如理解和回答问题、翻译语言、识别图片上的东西等等。这个助手就像是一个大模型，它通过学习大量的信息来掌握这些技能。  
 但是，这个助手虽然很聪明，它学到的东西可能并不完全适合你的具体需求。比如，你可能需要它特别擅长理解医学问题或者法律文件。这时候，我们就需要对助手进行一些特别的训练，让它在某些方面变得更加擅长。这个过程就叫做“微调”。
 
 ### 大模型微调的步骤大致如下：
@@ -101,33 +87,6 @@ einops
 灵活性：可以针对不同的需求快速调整模型。
 成本效益：相比于全面重新训练，微调通常需要较少的资源和时间。
 持续学习：随着时间的推移，可以不断地对模型进行微调，以适应新的情况和数据。
-
-```
-# cmd
-python3 -m venv myenv
-source myenv/bin/activate  # Linux/MacOS
-# myenv\Scripts\activate  # Windows
-git clone https://github.com/Stars-niu/ByteBrain.git
-cd ByteBrain
-pip install -r requirements.txt
-streamlit run appFineTuning.py --server.address 127.0.0.1 --server.port 1005
-```
-
-```powershell
-# knowledge.txt
-streamlit==1.24.0
-torch==2.3.0
-torchvision==0.18.0
-pandas
-datasets
-transformers
-peft
-modelscope
-tb-nightly
-sentencepiece
-flash_attn 
-einops
-```
 
 ---
 通过微调，我们可以让一个通用的智能助手变得更加专业和高效，更好地服务于特定的任务和需求。
