@@ -52,6 +52,29 @@ RAG 就像是一个人工智能助手的超级记忆功能。通常情况下，A
 有时候，传统的AI模型可能不知道最新的数据或者事件，比如新的科学研究发现、新闻报道等。有了RAG的帮助，AI就可以实时地获取这些信息，并利用它们来生成更准确的回答。   
 举个例子来说，如果有人问：“谁是当前世界上最富有的人？”没有RAG的AI可能会给出一个几年前的答案，而有RAG的AI则会去查找最新的财富排行榜来给出最新的名字。   
 
+```
+git clone https://github.com/Stars-niu/ByteBrain.git
+cd ByteBrain
+pip install --upgrade pip setuptools
+pip install -r requirements.txt
+streamlit run appRAG.py --server.address 127.0.0.1 --server.port 1009
+```
+```
+streamlit==1.24.0
+packaging
+torch
+torchvision==0.18.0
+pandas
+datasets
+transformers
+peft
+modelscope
+tb-nightly
+sentencepiece
+flash_attn 
+einops
+```
+
 ---
 总的来说，RAG就像是给AI装上了“即时更新”的功能，让它们能够更好地适应不断变化的信息环境，从而提供更加准确和有用的答案。
 
