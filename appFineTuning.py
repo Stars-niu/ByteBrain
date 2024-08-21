@@ -250,5 +250,4 @@ if prompt:
     # 在聊天界面上显示模型的输出
     st.chat_message("assistant").write(response)
 
-if __name__ == "__main__":
-    main()
+
