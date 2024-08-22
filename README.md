@@ -24,7 +24,7 @@ E-->F(启动!!!)
 `2、魔塔平台免费实例：注册并绑定阿里云账号试用GPU，时长100h`
 
 ```powershell
-#JupyterLab->Other->Terminal->Ctrl+V
+# JupyterLab->Other->Terminal->Ctrl+V
 git clone https://github.com/Stars-niu/ByteBrain.git
 cd ByteBrain
 pip install --upgrade pip setuptools
@@ -41,7 +41,7 @@ streamlit run app.py --server.address 127.0.0.1 --server.port 1001
 ## RAG（Retrieval-Augmented Generation）  
 
 ```
-#cmd
+# cmd
 git clone https://github.com/Stars-niu/ByteBrain.git
 cd ByteBrain
 pip install --upgrade pip setuptools
@@ -50,7 +50,7 @@ streamlit run appRAG.py --server.address 127.0.0.1 --server.port 1002
 ```
 
 ```
-#requirements.txt
+# requirements.txt
 streamlit==1.24.0
 packaging
 torch
