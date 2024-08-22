@@ -11,4 +11,4 @@ tb-nightly
 sentencepiece
 flash_attn 
 einops
-
+tf-keras
