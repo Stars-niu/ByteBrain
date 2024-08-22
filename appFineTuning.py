@@ -202,7 +202,7 @@ class LLM:
         return output
 
 print("> Create Yuan2.0 LLM...")
-llm = LLM(llm_model_dir)
+llm = LLM('./finetuned_model')
 
 # 初次运行时，session_state中没有"messages"，需要创建一个空列表
 if "messages" not in st.session_state:
@@ -249,5 +249,3 @@ if prompt:
 
     # 在聊天界面上显示模型的输出
     st.chat_message("assistant").write(response)
-
-
