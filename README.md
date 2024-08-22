@@ -41,11 +41,29 @@ streamlit run app.py --server.address 127.0.0.1 --server.port 1001
 ## RAG（Retrieval-Augmented Generation）  
 
 ```
+#cmd
 git clone https://github.com/Stars-niu/ByteBrain.git
 cd ByteBrain
 pip install --upgrade pip setuptools
 pip install -r requirements.txt
 streamlit run appRAG.py --server.address 127.0.0.1 --server.port 1002
+```
+
+```
+#requirements.txt
+streamlit==1.24.0
+packaging
+torch
+torchvision==0.18.0
+pandas
+datasets
+transformers
+peft
+modelscope
+tb-nightly
+sentencepiece
+flash_attn 
+einops
 ```
 
 这个名字听起来可能有点复杂，但实际上它就是一个帮助人工智能更好地理解和回答问题的技术。让我们来简单地了解一下RAG是什么以及它是怎么工作的。
