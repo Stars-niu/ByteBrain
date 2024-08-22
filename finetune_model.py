@@ -60,3 +60,6 @@ trainer.train()
 # 保存微调后的模型
 trainer.save_model('./finetuned_model')
 tokenizer.save_pretrained('./finetuned_model')
+
+# 确认模型保存成功
+print("Model and tokenizer saved to './finetuned_model'")
