@@ -202,20 +202,22 @@ class LLM:
             inputs = inputs.cuda()
 
         # 截断输入以确保长度不超过最大长度
-        max_length = 2048  # 增大最大长度限制
+        max_length = 2048
         if inputs.shape[1] > max_length:
             inputs = inputs[:, -max_length:]
 
-        # 确保输入数据类型正确
+        # 检查并转换输入数据类型
         if inputs.dtype == torch.bfloat16:
+            print(f"Input data type before conversion: {inputs.dtype}")
             inputs = inputs.to(torch.long)
+            print(f"Input data type after conversion: {inputs.dtype}")
 
         # 生成输出时确保模型和输入数据的数据类型一致
         if torch.cuda.is_available():
             self.model.to(torch.bfloat16)
         inputs = inputs.to(torch.bfloat16)
 
-        outputs = self.model.generate(inputs, do_sample=False, max_new_tokens=512)  # 增大最大生成长度
+        outputs = self.model.generate(inputs, do_sample=False, max_new_tokens=512)
         output = self.tokenizer.decode(outputs[0])
 
         # 移除不需要的字符
