@@ -1,0 +1,36 @@
+{
+  "add_bos_token": false,
+  "add_eos_token": false,
+  "sep_token": "<sep>",
+  "eod_token": "<eod>",
+  "chat_template": "{% for message in messages %}{% if message['role'] == 'system' %}{{ message['content'].strip() + '\\n' }}{% elif message['role'] == 'user' %}{{ message['content'].strip() + (sep_token if loop.last else '<n>') }}{% elif message['role'] == 'assistant' %}{{ message['content'].strip() + (sep_token if loop.last else '<n>') }}{% endif %}{% endfor %}",
+  "bos_token": {
+    "__type": "AddedToken",
+    "content": "<s>",
+    "lstrip": false,
+    "normalized": true,
+    "rstrip": false,
+    "single_word": false
+  },
+  "clean_up_tokenization_spaces": false,
+  "eos_token": {
+    "__type": "AddedToken",
+    "content": "</s>",
+    "lstrip": false,
+    "normalized": true,
+    "rstrip": false,
+    "single_word": false
+  },
+  "model_max_length": 1000000000000000019884624838656,
+  "pad_token": null,
+  "sp_model_kwargs": {},
+  "tokenizer_class": "LlamaTokenizer",
+  "unk_token": {
+    "__type": "AddedToken",
+    "content": "<unk>",
+    "lstrip": false,
+    "normalized": true,
+    "rstrip": false,
+    "single_word": false
+  }
+}
