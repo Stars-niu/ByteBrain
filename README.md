@@ -39,6 +39,7 @@ streamlit run app.py --server.address 127.0.0.1 --server.port 1001
 ---
 
 ## RAG（Retrieval-Augmented Generation）  
+这个名字听起来可能有点复杂，但实际上它就是一个帮助人工智能更好地理解和回答问题的技术。让我们来简单地了解一下RAG是什么以及它是怎么工作的。
 
 ```
 # cmd
@@ -66,8 +67,6 @@ flash_attn
 einops
 ```
 
-这个名字听起来可能有点复杂，但实际上它就是一个帮助人工智能更好地理解和回答问题的技术。让我们来简单地了解一下RAG是什么以及它是怎么工作的。
-
 ### RAG 是什么？
 RAG 就像是一个人工智能助手的超级记忆功能。通常情况下，AI在回答问题时，会依赖于它之前学习过的大量知识。但是有时候这些知识可能不够全面或者不够新。这时候RAG就派上用场了——它可以让AI在回答问题的时候去查找最新的信息，就像我们人类在回答问题前会去查阅资料一样。
 
@@ -91,6 +90,41 @@ RAG 就像是一个人工智能助手的超级记忆功能。通常情况下，A
 ## 微调（Fine tuning）
 想象一下，你有一个非常聪明的助手，它已经学会了很多基本技能，比如理解和回答问题、翻译语言、识别图片上的东西等等。这个助手就像是一个大模型，它通过学习大量的信息来掌握这些技能。  
 但是，这个助手虽然很聪明，它学到的东西可能并不完全适合你的具体需求。比如，你可能需要它特别擅长理解医学问题或者法律文件。这时候，我们就需要对助手进行一些特别的训练，让它在某些方面变得更加擅长。这个过程就叫做“微调”。
+
+```
+git clone https://github.com/Stars-niu/ByteBrain.git
+cd ByteBrain
+pip install --upgrade pip setuptools
+pip install -r requirements.txt
+python finetune_model.py
+pip install streamlit
+pip install tf-keras
+streamlit run appFineTuning.py --server.address 127.0.0.1 --server.port 1009
+
+```
+
+```
+streamlit==1.24.0
+packaging
+torch==2.0.1
+torchvision==0.15.2
+pandas
+datasets
+transformers==4.35.0
+peft
+modelscope
+tb-nightly
+sentencepiece
+flash_attn
+einops
+tf-keras
+requests
+beautifulsoup4
+tensorboard<2.17,>=2.16
+tensorflow==2.16.1
+timm==0.5.4
+huggingface_hub==0.14.1  # Add the compatible versionhuggingface_hub==0.14.1  # Add the compatible version
+```
 
 ### 大模型微调的步骤大致如下：
 选择一个大模型(这个模型已经通过学习大量的数据，具备了广泛的知识和技能):
