@@ -8,7 +8,7 @@ import os
 import json
 from datasets import load_dataset, Dataset
 
-# 设置CUDA环境变量
+# 设置 CUDA 环境变量
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 # 设置页面配置
@@ -24,19 +24,23 @@ st.set_page_config(
     }
 )
 
-# 添加自定义CSS样式
+# 添加自定义 CSS 样式
 st.markdown(
     """
     <style>
-    .main {
+    body {
         background-image: url('Background.png');
         background-size: cover;
         background-position: center;
         padding: 10px;
+        color: #fff;
     }
-    .stButton>button {
+   .main {
+        padding: 10px;
+    }
+   .stButton>button {
         background-color: #4CAF50;
-        color: blue;
+        color: #fff;
         border: none;
         padding: 10px 24px;
         text-align: center;
@@ -47,25 +51,33 @@ st.markdown(
         cursor: pointer;
         border-radius: 12px;
     }
-    .stTextInput>div>div>input {
+   .stTextInput>div>div>input {
         border: 2px solid #4CAF50;
         border-radius: 12px;
         padding: 10px;
+        background-color: #fff;
+        color: #000;
     }
-    .fixed-right {
+   .fixed-right {
         position: fixed;
         top: 20px;
         right: 20px;
         width: 30%;
     }
-    .chat-container {
+   .chat-container {
         width: 100%;
         max-height: 70vh;
         overflow-y: auto;
         padding-right: 20px;
     }
-    .stChatMessage {
+   .stChatMessage {
         width: 100%;
+    }
+   .answer-box {
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 20px;
     }
     </style>
     """,
@@ -194,7 +206,11 @@ class LLM:
         if inputs.shape[1] > max_length:
             inputs = inputs[:, -max_length:]
 
-        # 生成输出
+        # 生成输出时确保模型和输入数据的数据类型一致
+        if torch.cuda.is_available():
+            self.model.to(torch.bfloat16)
+        inputs = inputs.to(torch.bfloat16)
+
         outputs = self.model.generate(inputs, do_sample=False, max_new_tokens=512)  # 增大最大生成长度
         output = self.tokenizer.decode(outputs[0])
 
@@ -243,7 +259,7 @@ class LLM:
 print("> Create Yuan2.0 LLM model...")
 llm = LLM(llm_model_dir)
 
-# Streamlit界面
+# Streamlit 界面
 def main():
     st.title("ByteBrain - 智能知识助手")
 
@@ -260,9 +276,10 @@ def main():
             # 大语言模型生成回答
             st.write("正在生成回答...")
             answer = llm.generate(question, context)
-            st.write("回答：", answer)
+            with st.container():
+                st.markdown(f'<div class="answer-box">{answer}</div>', unsafe_allow_html=True)
         else:
             st.write("请输入问题后再点击查询按钮。")
 
 if __name__ == "__main__":
-    main() 
+    main()
