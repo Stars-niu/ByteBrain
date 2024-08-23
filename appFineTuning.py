@@ -1,10 +1,12 @@
 import streamlit as st
 from modelscope import snapshot_download
-from typing import List
+from typing import List, Dict
 import numpy as np
 import torch
-from transformers import AutoModel, AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoModel, AutoTokenizer, AutoModelForCausalLM, Trainer, TrainingArguments, DataCollatorForLanguageModeling
 import os
+import json
+from datasets import load_dataset, Dataset
 
 # 设置CUDA环境变量
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
@@ -95,7 +97,7 @@ class EmbeddingModel:
             self.model = self.model.cuda()
         print(f'Loading EmbeddingModel from {path}.')
 
-    def get_embeddings(self, texts: List) -> List[float]:
+    def get_embeddings(self, texts: List[str]) -> List[float]:
         """
         calculate embedding for text list
         """
@@ -155,7 +157,7 @@ print("> Create index...")
 document_path = './knowledge.txt'
 index = VectorStoreIndex(document_path, embed_model)
 
-# 定义大语言模型类
+# 定义大语言模型类（包含微调功能）
 class LLM:
     """
     class for Yuan2.0 LLM
@@ -175,7 +177,7 @@ class LLM:
 
         print(f'Loading Yuan2.0 model from {model_path}.')
 
-    def generate(self, question: str, context: List):
+    def generate(self, question: str, context: List[str]) -> str:
         # 构建提示词
         if context:
             prompt = f'背景：{context}\n问题：{question}\n请基于背景，回答问题。'
@@ -201,51 +203,66 @@ class LLM:
 
         return output
 
-print("> Create Yuan2.0 LLM...")
-llm = LLM('./finetuned_model')
+    def fine_tune(self, data_path: str) -> None:
+        # 加载微调数据
+        dataset = load_dataset('json', data_files=data_path, split='train')
 
-# 初次运行时，session_state中没有"messages"，需要创建一个空列表
-if "messages" not in st.session_state:
-    st.session_state["messages"] = []
+        def preprocess_function(examples):
+            inputs = examples['input_text']
+            targets = examples['output_text']
+            model_inputs = self.tokenizer(inputs, max_length=512, truncation=True)
 
-# 使用分栏布局
-col1, col2 = st.columns([2, 1])
+            # Setup the tokenizer for targets
+            with self.tokenizer.as_target_tokenizer():
+                labels = self.tokenizer(targets, max_length=512, truncation=True)
 
-with col1:
-    st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
-    # 每次对话时，都需要遍历session_state中的所有消息，并显示在聊天界面上
-    for msg in st.session_state.messages:
-        st.chat_message(msg["role"]).write(msg["content"])
-    st.markdown("</div>", unsafe_allow_html=True)
+            model_inputs['labels'] = labels['input_ids']
+            return model_inputs
 
-with col2:
-    st.markdown("<div class='fixed-right'>", unsafe_allow_html=True)
-    st.image("logo.png", caption="ByteBrain Logo", width=150)
-    st.markdown("ByteBrain——一个智能知识助手，旨在帮助用户快速获取信息和解决问题。")
-    st.markdown("### 联系我们")
-    st.markdown("如果您有任何问题或建议，请通过以下方式联系我们：")
-    st.markdown("- 邮箱: support@bytebrain.com")
-    st.markdown("- 电话: 520-1314")
-    st.markdown("</div>", unsafe_allow_html=True)
+        tokenized_dataset = dataset.map(preprocess_function, batched=True)
+        data_collator = DataCollatorForLanguageModeling(tokenizer=self.tokenizer, mlm=False)
 
-# 聊天输入框放在col1之外
-prompt = st.chat_input("请输入您的问题:")
+        training_args = TrainingArguments(
+            output_dir='./results',
+            overwrite_output_dir=True,
+            num_train_epochs=3,
+            per_device_train_batch_size=4,
+            save_steps=10_000,
+            save_total_limit=2,
+        )
 
-if prompt:
-    # 将用户的输入添加到session_state中的messages列表中
-    st.session_state.messages.append({"role": "user", "content": prompt})
+        trainer = Trainer(
+            model=self.model,
+            args=training_args,
+            train_dataset=tokenized_dataset,
+            data_collator=data_collator,
+        )
 
-    # 在聊天界面上显示用户的输入
-    st.chat_message("user").write(prompt)
+        trainer.train()
 
-    # 检索相关知识
-    context = index.query(prompt)
+print("> Create Yuan2.0 LLM model...")
+llm = LLM(llm_model_dir)
 
-    # 调用模型
-    response = llm.generate(prompt, context)
+# Streamlit界面
+def main():
+    st.title("ByteBrain - 智能知识助手")
 
-    # 将模型的输出添加到session_state中的messages列表中
-    st.session_state.messages.append({"role": "assistant", "content": response})
+    # 用户输入
+    question = st.text_input("请输入您的问题：")
 
-    # 在聊天界面上显示模型的输出
-    st.chat_message("assistant").write(response)
+    if st.button("查询"):
+        if question:
+            # 向量库检索
+            st.write("正在检索相关文档...")
+            context = index.query(question, k=3)
+            st.write("检索到的相关文档：", context)
+
+            # 大语言模型生成回答
+            st.write("正在生成回答...")
+            answer = llm.generate(question, context)
+            st.write("回答：", answer)
+        else:
+            st.write("请输入问题后再点击查询按钮。")
+
+if __name__ == "__main__":
+    main() 
