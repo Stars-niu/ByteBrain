@@ -8,9 +8,6 @@ import os
 import json
 from datasets import load_dataset, Dataset
 
-# 设置 CUDA 环境变量
-os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-
 # 设置页面配置
 st.set_page_config(
     page_title="ByteBrain",
@@ -88,6 +85,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# 创建一个标题和一个副标题
+st.markdown(
+    '<h1>✨ ByteBrain</h1><h2>——计算机科学智能知识助手</h2>',
+    unsafe_allow_html=True
+)
+
 # 向量模型下载
 try:
     embed_model_dir = snapshot_download("AI-ModelScope/bge-small-zh-v1.5", cache_dir='.')
@@ -115,8 +118,8 @@ class EmbeddingModel:
             # 加载预训练的分词器和模型
             self.tokenizer = AutoTokenizer.from_pretrained(path)
             self.model = AutoModel.from_pretrained(path)
-            if torch.cuda.is_available():
-                self.model = self.model.cuda()
+            # 确保不使用 GPU
+            self.model = self.model.to('cpu')
             print(f'Loading EmbeddingModel from {path}.')
         except Exception as e:
             print(f'Error initializing EmbeddingModel: {e}')
@@ -128,8 +131,8 @@ class EmbeddingModel:
         try:
             # 对输入文本进行编码
             encoded_input = self.tokenizer(texts, padding=True, truncation=True, return_tensors='pt')
-            if torch.cuda.is_available():
-                encoded_input = {k: v.cuda() for k, v in encoded_input.items()}
+            # 确保不使用 GPU
+            encoded_input = {k: v.to('cpu') for k, v in encoded_input.items()}
             with torch.no_grad():
                 # 获取模型输出
                 model_output = self.model(**encoded_input)
@@ -222,9 +225,9 @@ class LLM:
 
             print("Create model...")
             # 加载预训练的语言模型
-            self.model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.bfloat16, trust_remote_code=True)
-            if torch.cuda.is_available():
-                self.model = self.model.cuda()
+            self.model = AutoModelForCausalLM.from_pretrained(model_path)
+            # 确保不使用 GPU
+            self.model = self.model.to('cpu')
 
             print(f'Loading Yuan2.0 model from {model_path}.')
         except Exception as e:
@@ -243,8 +246,8 @@ class LLM:
 
             prompt += "<sep>"
             inputs = self.tokenizer(prompt, return_tensors="pt")["input_ids"]
-            if torch.cuda.is_available():
-                inputs = inputs.cuda()
+            # 确保不使用 GPU
+            inputs = inputs.to('cpu')
 
             # 截断输入以确保长度不超过最大长度
             max_length = 2048
@@ -258,12 +261,11 @@ class LLM:
                 st.error(f'Unexpected input data type: {inputs.dtype}. Expected torch.long.')
                 return 'Sorry, an error occurred while generating the answer.'
 
-            # 生成输出时确保模型和输入数据的数据类型一致
-            if torch.cuda.is_available():
-                self.model.to(torch.bfloat16)
-            inputs = inputs.to(torch.bfloat16)
+            # 创建注意力掩码
+            attention_mask = torch.ones_like(inputs)
 
-            outputs = self.model.generate(inputs, do_sample=False, max_new_tokens=512)
+            # 生成输出时确保模型和输入数据的数据类型一致
+            outputs = self.model.generate(inputs, attention_mask=attention_mask, do_sample=False, max_new_tokens=512)
             output = self.tokenizer.decode(outputs[0])
 
             # 移除不需要的字符
