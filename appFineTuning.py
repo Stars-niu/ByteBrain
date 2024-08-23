@@ -33,10 +33,10 @@ st.markdown(
         color: #fff; /* 白色文字 */
         font-family: Arial, sans-serif; /* 字体 */
     }
- .main {
+.main {
         padding: 20px;
     }
- .stButton>button {
+.stButton>button {
         background-color: #61dafb; /* 浅蓝色按钮背景 */
         color: #000; /* 黑色文字 */
         border: none;
@@ -49,29 +49,29 @@ st.markdown(
         cursor: pointer;
         border-radius: 12px;
     }
- .stTextInput>div>div>input {
+.stTextInput>div>div>input {
         border: 2px solid #61dafb; /* 浅蓝色边框 */
         border-radius: 12px;
         padding: 10px;
         background-color: #fff; /* 白色输入框背景 */
         color: #000; /* 黑色文字 */
     }
- .fixed-right {
+.fixed-right {
         position: fixed;
         top: 20px;
         right: 20px;
         width: 30%;
     }
- .chat-container {
+.chat-container {
         width: 100%;
         max-height: 70vh;
         overflow-y: auto;
         padding-right: 20px;
     }
- .stChatMessage {
+.stChatMessage {
         width: 100%;
     }
- .answer-box {
+.answer-box {
         background-color: rgba(0, 0, 0, 0.5);
         padding: 15px;
         border-radius: 12px;
@@ -339,17 +339,31 @@ user_input = st.sidebar.text_area("请输入你的问题：", "")
 if st.sidebar.button("查询"):
     if user_input:
         st.sidebar.markdown("### 查询结果")
+
+# Streamlit 用户界面逻辑
+st.sidebar.title("ByteBrain 侧边栏")
+user_input = st.sidebar.text_area("请输入你的问题：", "")
+
+if st.sidebar.button("查询"):
+    if user_input:
+        st.sidebar.markdown("### 查询结果")
         # 查询 VectorStoreIndex
-        context = index.query(user_input)
-        st.sidebar.markdown("#### 上下文")
-        for doc in context:
-            st.sidebar.markdown(f"- {doc}")
+        try:
+            context = index.query(user_input)
+            st.sidebar.markdown("#### 上下文")
+            for doc in context:
+                st.sidebar.markdown(f"- {doc}")
+        except Exception as e:
+            st.sidebar.error(f'查询时出现错误：{e}')
         
         # 使用大语言模型生成回答
         if llm_model:
-            answer = llm_model.generate(user_input, context)
-            st.sidebar.markdown("#### 回答")
-            st.sidebar.markdown(f"{answer}")
+            try:
+                answer = llm_model.generate(user_input, context)
+                st.sidebar.markdown("#### 回答")
+                st.sidebar.markdown(f"{answer}")
+            except Exception as e:
+                st.sidebar.error(f'生成回答时出现错误：{e}')
         else:
             st.sidebar.error("语言模型加载失败，无法生成回答。")
     else:
