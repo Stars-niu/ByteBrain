@@ -29,7 +29,10 @@ git clone https://github.com/Stars-niu/ByteBrain.git
 cd ByteBrain
 pip install --upgrade pip setuptools
 pip install -r requirements.txt
-streamlit run app.py --server.address 127.0.0.1 --server.port 1001
+python finetune_model.py
+pip install streamlit
+pip install tf-keras
+streamlit run app.py --server.address 127.0.0.1 --server.port 1005
 ```
 
 ### 问题注意:
