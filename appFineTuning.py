@@ -208,9 +208,9 @@ class LLM:
 
         # 检查并转换输入数据类型
         if inputs.dtype == torch.bfloat16:
-            print(f"Input data type before conversion: {inputs.dtype}")
+            print(f"Before conversion: Input data type is {inputs.dtype}")
             inputs = inputs.to(torch.long)
-            print(f"Input data type after conversion: {inputs.dtype}")
+            print(f"After conversion: Input data type is {inputs.dtype}")
 
         # 生成输出时确保模型和输入数据的数据类型一致
         if torch.cuda.is_available():
