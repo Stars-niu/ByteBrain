@@ -207,14 +207,9 @@ class LLM:
             inputs = inputs[:, -max_length:]
 
         # 确保输入数据类型正确
-        if inputs.dtype == torch.bfloat16:
-            inputs = inputs.to(torch.long)
+        inputs = inputs.to(torch.long)
 
         # 生成输出时确保模型和输入数据的数据类型一致
-        if torch.cuda.is_available():
-            self.model.to(torch.bfloat16)
-        inputs = inputs.to(torch.bfloat16)
-
         outputs = self.model.generate(inputs, do_sample=False, max_new_tokens=512)  # 增大最大生成长度
         output = self.tokenizer.decode(outputs[0])
 
@@ -240,7 +235,7 @@ class LLM:
             return model_inputs
 
         tokenized_dataset = dataset.map(preprocess_function, batched=True)
-        data_collator = DataCollatorForLanguageModeling(tokenizer=self.tokenizer, mlm=False)
+        data_collator = DataCollatorForLanguageModeling(tokenizer=self.tokener, mlm=False)
 
         training_args = TrainingArguments(
             output_dir='./results',
@@ -249,41 +244,42 @@ class LLM:
             per_device_train_batch_size=4,
             save_steps=10_000,
             save_total_limit=2,
+            logging_dir='./logs',
+            logging_steps=200,
         )
 
         trainer = Trainer(
             model=self.model,
             args=training_args,
-            train_dataset=tokenized_dataset,
             data_collator=data_collator,
+            train_dataset=tokenized_dataset,
         )
 
         trainer.train()
 
-print("> Create Yuan2.0 LLM model...")
-llm = LLM(llm_model_dir)
+print("> Create LLM model...")
+llm_model = LLM(llm_model_dir)
 
-# Streamlit 界面
-def main():
-    st.title("ByteBrain - 智能知识助手")
+# Streamlit 用户界面逻辑
+st.sidebar.title("ByteBrain 侧边栏")
+user_input = st.sidebar.text_area("请输入你的问题：", "")
 
-    # 用户输入
-    question = st.text_input("请输入您的问题：")
+if st.sidebar.button("查询"):
+    if user_input:
+        st.sidebar.markdown("### 查询结果")
+        # 查询 VectorStoreIndex
+        context = index.query(user_input)
+        st.sidebar.markdown("#### 上下文")
+        for doc in context:
+            st.sidebar.markdown(f"- {doc}")
+        
+        # 使用大语言模型生成回答
+        answer = llm_model.generate(user_input, context)
+        st.sidebar.markdown("#### 回答")
+        st.sidebar.markdown(f"{answer}")
+    else:
+        st.sidebar.warning("请输入你的问题！")
 
-    if st.button("查询"):
-        if question:
-            # 向量库检索
-            st.write("正在检索相关文档...")
-            context = index.query(question, k=3)
-            st.write("检索到的相关文档：", context)
-
-            # 大语言模型生成回答
-            st.write("正在生成回答...")
-            answer = llm.generate(question, context)
-            with st.container():
-                st.markdown(f'<div class="answer-box">{answer}</div>', unsafe_allow_html=True)
-        else:
-            st.write("请输入问题后再点击查询按钮。")
-
-if __name__ == "__main__":
-    main()
+# 主页面
+st.title("ByteBrain")
+st.write("欢迎使用 ByteBrain，一个计算机科学智能知识助手！请输入你的问题，获取专业的回答。")
