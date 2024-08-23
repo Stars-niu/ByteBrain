@@ -12,3 +12,5 @@ sentencepiece
 flash_attn 
 einops
 tf-keras
+requests 
+beautifulsoup4
