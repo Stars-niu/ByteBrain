@@ -7,7 +7,6 @@ import pandas as pd
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments, DataCollatorForLanguageModeling
 
-
 # 定义模型路径
 model_download_path = './local_model'
 model_finetune_path = './local_model/IEITYuan/Yuan2-2B-Mars-hf'
@@ -58,6 +57,8 @@ class QADataset(torch.utils.data.Dataset):
 # 从调整后的路径加载预训练的分词器和模型
 tokenizer = AutoTokenizer.from_pretrained(model_finetune_path, add_eos_token=False, add_bos_token=False, eos_token='<eod>', legacy=False)
 tokenizer.add_tokens(['<sep>', '<pad>', '<mask>', '<predict>', '<FIM_SUFFIX>', '<FIM_PREFIX>', '<FIM_MIDDLE>','<commit_before>','<commit_msg>','<commit_after>','<jupyter_start>','<jupyter_text>','<jupyter_code>','<jupyter_output>','<empty_output>'], special_tokens=True)
+tokenizer.pad_token = tokenizer.eos_token  # 设置 pad_token
+
 model = AutoModelForCausalLM.from_pretrained(model_finetune_path, torch_dtype=torch.bfloat16, trust_remote_code=True)
 
 # 创建数据集和数据加载器
