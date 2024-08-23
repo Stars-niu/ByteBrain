@@ -36,10 +36,10 @@ st.markdown(
         padding: 10px;
         color: #fff;
     }
- .main {
+.main {
         padding: 10px;
     }
- .stButton>button {
+.stButton>button {
         background-color: #4CAF50;
         color: #fff;
         border: none;
@@ -52,29 +52,29 @@ st.markdown(
         cursor: pointer;
         border-radius: 12px;
     }
- .stTextInput>div>div>input {
+.stTextInput>div>div>input {
         border: 2px solid #4CAF50;
         border-radius: 12px;
         padding: 10px;
         background-color: #fff;
         color: #000;
     }
- .fixed-right {
+.fixed-right {
         position: fixed;
         top: 20px;
         right: 20px;
         width: 30%;
     }
- .chat-container {
+.chat-container {
         width: 100%;
         max-height: 70vh;
         overflow-y: auto;
         padding-right: 20px;
     }
- .stChatMessage {
+.stChatMessage {
         width: 100%;
     }
- .answer-box {
+.answer-box {
         background-color: rgba(0, 0, 0, 0.5);
         padding: 15px;
         border-radius: 12px;
@@ -342,7 +342,7 @@ def main():
             if index:
                 context = index.query(question, k=3)
                 st.write("检索到的相关文档：", context)
-            else::
+            else:
                 st.error('Index not available. Cannot query.')
 
             # 大语言模型生成回答
