@@ -88,8 +88,7 @@ pip install -r requirements.txt
 python finetune_model.py
 pip install streamlit
 pip install tf-keras
-streamlit run appFineTuning.py --server.address 127.0.0.1 --server.port 1009
-
+streamlit run appFineTuning.py --server.address 127.0.0.1 --server.port 1005
 ```
 
 ```
