@@ -88,12 +88,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# 创建一个标题和一个副标题
-st.markdown(
-    '<h1>✨ ByteBrain</h1><h2>——计算机科学智能知识助手</h2>',
-    unsafe_allow_html=True
-)
-
 # 向量模型下载
 try:
     embed_model_dir = snapshot_download("AI-ModelScope/bge-small-zh-v1.5", cache_dir='.')
@@ -334,15 +328,7 @@ else:
 
 # Streamlit 用户界面逻辑
 st.sidebar.title("ByteBrain 侧边栏")
-user_input = st.sidebar.text_area("请输入你的问题：", "")
-
-if st.sidebar.button("查询"):
-    if user_input:
-        st.sidebar.markdown("### 查询结果")
-
-# Streamlit 用户界面逻辑
-st.sidebar.title("ByteBrain 侧边栏")
-user_input = st.sidebar.text_area("请输入你的问题：", "")
+user_input = st.sidebar.text_area("请输入你的问题：", "", key="unique_text_area_key")
 
 if st.sidebar.button("查询"):
     if user_input:
@@ -368,7 +354,3 @@ if st.sidebar.button("查询"):
             st.sidebar.error("语言模型加载失败，无法生成回答。")
     else:
         st.sidebar.warning("请输入你的问题！")
-
-# 主页面
-st.title("ByteBrain")
-st.write("欢迎使用 ByteBrain，一个计算机科学智能知识助手！请输入你的问题，获取专业的回答。")
