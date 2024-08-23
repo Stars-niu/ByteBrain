@@ -1,6 +1,6 @@
 streamlit==1.24.0
 packaging
-torch==2.3.1
+torch==2.0.1  # Downgraded to match torchvision
 torchvision==0.15.2
 pandas
 datasets
@@ -14,3 +14,6 @@ einops
 tf-keras
 requests
 beautifulsoup4
+tensorboard<2.17,>=2.16  # Added to meet tensorflow's requirement
+tensorflow==2.16.1  # Explicitly mention tensorflow version
+timm==0.5.4  # Added to meet pai-easycv's requirement
