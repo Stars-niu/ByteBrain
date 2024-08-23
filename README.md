@@ -50,24 +50,10 @@ git clone https://github.com/Stars-niu/ByteBrain.git
 cd ByteBrain
 pip install --upgrade pip setuptools
 pip install -r requirements.txt
-streamlit run appRAG.py --server.address 127.0.0.1 --server.port 1002
-```
-
-```
-# requirements.txt
-streamlit==1.24.0
-packaging
-torch
-torchvision==0.18.0
-pandas
-datasets
-transformers
-peft
-modelscope
-tb-nightly
-sentencepiece
-flash_attn 
-einops
+python finetune_model.py
+pip install streamlit
+pip install tf-keras
+streamlit run appRAG.py --server.address 127.0.0.1 --server.port 1003
 ```
 
 ### RAG 是什么？
