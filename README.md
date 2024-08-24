@@ -91,29 +91,6 @@ pip install tf-keras
 streamlit run appFineTuning.py --server.address 127.0.0.1 --server.port 1005
 ```
 
-```
-streamlit==1.24.0
-packaging
-torch==2.0.1
-torchvision==0.15.2
-pandas
-datasets
-transformers==4.35.0
-peft
-modelscope
-tb-nightly
-sentencepiece
-flash_attn
-einops
-tf-keras
-requests
-beautifulsoup4
-tensorboard<2.17,>=2.16
-tensorflow==2.16.1
-timm==0.5.4
-huggingface_hub==0.14.1  # Add the compatible versionhuggingface_hub==0.14.1  # Add the compatible version
-```
-
 ### 大模型微调的步骤大致如下：
 选择一个大模型(这个模型已经通过学习大量的数据，具备了广泛的知识和技能):
  - 准备特定领域的数据：这些数据是专门为你的需要准备的，比如医学问题和答案的集合。
